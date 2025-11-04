@@ -3,9 +3,10 @@
  * GitHub repo: https://github.com/yTakkar/React-Instagram-Clone-2.0
  */
 
-// HANDY FUNCTIONS FOR MYSQL
+// HANDY FUNCTIONS FOR DATABASE
 
-const db = require('./Mysql')
+// Use the Database adapter which will choose MySQL or Postgres (Supabase)
+const db = require('./Database')
 
 /**
  * Query MySQL as a promise

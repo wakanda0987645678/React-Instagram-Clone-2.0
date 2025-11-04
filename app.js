@@ -46,6 +46,7 @@ app.use(
 )
 app.use(validator())
 app.use(express.static(join(__dirname, '/dist')))
+// dist is already served above; fonts placed in dist/fonts will be available at /fonts/*
 app.use(
   session({
     cookieName: 'session',

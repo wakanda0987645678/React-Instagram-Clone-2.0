@@ -1,5 +1,6 @@
 $a: #2895F1;
-$family: 'Open Sans', 'Roboto', Tahoma, arial, sans-serif;
+// Prefer the custom PoppinsRounded font if available
+$family: 'PoppinsRounded', 'Open Sans', 'Roboto', Tahoma, arial, sans-serif;
 $dark: #1b2733;
 $fb: #fbfbfb;
 $ff: #fff;
