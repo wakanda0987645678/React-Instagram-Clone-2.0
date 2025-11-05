@@ -89,5 +89,32 @@ export const commonLogin = options => {
 
       button.blur()
     })
-    .catch(e => console.log(e))
+    .catch(async e => {
+      // Log the error to console for dev
+      console.error('Login/Signup error:', e)
+
+      // Notify the user generically
+      try {
+        Notify({ value: 'An error occured. Please try again later.' })
+      } catch (nErr) {
+        console.error('Failed to show notify:', nErr)
+      }
+
+      // Attempt to send the error to server for persistent logging
+      try {
+        // send minimal info to the server log endpoint
+        await post('/api/log-client-error', {
+          when: options.when || url,
+          url: window.location.href,
+          userAgent: navigator.userAgent,
+          error: (e && e.message) || String(e),
+          stack: (e && e.stack) || null,
+        })
+      } catch (logErr) {
+        // swallow logging errors but print them in console
+        console.error('Failed to POST client error to /api/log-client-error:', logErr)
+      }
+
+      action.end(defBtnValue)
+    })
 }

@@ -68,6 +68,27 @@ Note: Many improvements were done after recording this video.
     ```javacript
     localhost:[PORT] (PORT=defined in .env)
     ```
+
+## Test user (dev seed)
+
+For convenience there's a seed script that creates a stable test user in your development database.
+
+- Username: `seed_testuser`
+- Email: `seed_testuser@example.com`
+- Password: `Test1234!`
+
+Run the script after you have imported `db.sql` and configured your `.env`:
+
+```bash
+# using npm
+npm run seed:test
+
+# or directly
+node seeds/create-test-user.js
+```
+
+If the user already exists the script will print the existing user's id and details and will not create a duplicate. To recreate the user delete it from your DB and re-run the script.
+
     
 # Todo
 - [x] More image filters

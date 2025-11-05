@@ -5,6 +5,33 @@ const app = require('express').Router(),
   User = require('../../config/User'),
   Group = require('../../config/Group')
 
+// simple server-side logging for client errors
+const fs = require('fs')
+const path = require('path')
+
+app.post('/log-client-error', (req, res) => {
+  try {
+    const logsDir = path.join(process.cwd(), 'logs')
+    if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir)
+
+    const file = path.join(logsDir, 'client-errors.log')
+    const payload = {
+      time: new Date().toISOString(),
+      ip: req.ip || null,
+      body: req.body || {},
+    }
+
+    fs.appendFile(file, JSON.stringify(payload) + '\n', err => {
+      if (err) console.error('Failed to write client error log:', err)
+    })
+
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('Error in /log-client-error:', err)
+    res.status(500).json({ ok: false })
+  }
+})
+
 // FOR CHECKING IF IT'S A VALID USER [REQ = USERNAME]
 app.post('/is-user-valid', async (req, res) => {
   let { username } = req.body,

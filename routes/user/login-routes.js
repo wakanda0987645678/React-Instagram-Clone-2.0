@@ -59,6 +59,30 @@ app.post('/user/login', async (req, res) => {
       }
     }
   } catch (error) {
+    // Log the error to a file for later inspection (do not log raw passwords)
+    try {
+      const fs = require('fs')
+      const path = require('path')
+      const logsDir = path.join(process.cwd(), 'logs')
+      if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir)
+
+      const file = path.join(logsDir, 'auth-errors.log')
+      const body = Object.assign({}, req.body)
+      if (body.password) body.password = '[MASKED]'
+
+      const payload = {
+        time: new Date().toISOString(),
+        route: '/user/login',
+        ip: req.ip || null,
+        body,
+        stack: (error && error.stack) || null,
+      }
+
+      fs.appendFileSync(file, JSON.stringify(payload) + '\n')
+    } catch (e) {
+      console.error('Failed to write auth error log:', e)
+    }
+
     db.catchError(error, res)
   }
 })
