@@ -34,7 +34,13 @@ app.get('/about', (req, res) => {
   res.render('about', { options })
 })
 
-// ROUTE FOR LOGGED IN USER [REACT IS RENDERED BY THIS ROUTE]
+// Public routes - accessible without login
+app.get(['/', '/explore', '/explore/*'], (req, res) => {
+  let options = { title: '📸' }
+  res.render('app', { options })
+})
+
+// All other routes require login
 app.get('*', mw.LoggedIn, (req, res) => {
   let options = { title: '📸' }
   res.render('app', { options })

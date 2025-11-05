@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'PoppinsRounded';
+  src: url('/fonts/PoppinsRounded-Rounded.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Override any inherited fonts to ensure PoppinsRounded is used
+* {
+  font-family: 'PoppinsRounded', sans-serif !important;
+}

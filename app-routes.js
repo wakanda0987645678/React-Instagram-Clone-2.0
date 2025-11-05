@@ -39,9 +39,27 @@ const notifyR = require('./routes/api/others/notification-routes'),
 
 // Main route
 const mainR = require('./routes/main-routes')
+const mw = require('./config/Middlewares')
 
 const AppRoutes = app => {
-  // Routing (mainR route should be placed last)
+  // Public API endpoints (no auth required)
+  app.use('/api/explore', exploreR)
+  app.use('/api/get-posts', getPostR)
+
+  // Auth required for all other API endpoints
+  app.use('/api/post', mw.ActionAuth, postR)
+  app.use('/api/comment', mw.ActionAuth, commentR)
+  app.use('/api/share', mw.ActionAuth, shareR)
+  app.use('/api/like', mw.ActionAuth, likesR)
+  app.use('/api/follow', mw.ActionAuth, followR)
+  app.use('/api/favourite', mw.ActionAuth, favR)
+  app.use('/api/message', mw.ActionAuth, mssgR)
+  app.use('/api/group', mw.ActionAuth, groupR)
+  app.use('/api/notify', mw.ActionAuth, notifyR)
+  app.use('/api/edit', mw.ActionAuth, editR)
+  app.use('/api/settings', mw.ActionAuth, settingsR)
+
+  // Auth routes
   app.use('/', userR)
   app.use('/', signUpR)
   app.use('/', loginR)

@@ -4,6 +4,7 @@ const app = require('express').Router(),
   db = require('../../../config/db'),
   Post = require('../../../config/Post'),
   User = require('../../../config/User'),
+  mw = require('../../../config/Middlewares'),
   root = process.cwd(),
   upload = require('multer')({
     dest: `${root}/dist/temp/`,
@@ -11,48 +12,53 @@ const app = require('express').Router(),
   { ProcessImage, DeleteAllOfFolder } = require('handy-image-processor')
 
 // POST [REQ = DESC, FILTER, LOCATION, TYPE, GROUP, IMAGE(FILE) ]
-app.post('/post-it', upload.single('image'), async (req, res) => {
-  try {
-    let { id } = req.session,
-      { desc, filter, location, type, group } = req.body,
-      filename = `instagram_${new Date().getTime()}.jpg`,
-      obj = {
-        srcFile: req.file.path,
-        destFile: `${root}/dist/posts/${filename}`,
-      },
-      insert = {
-        user: id,
-        description: desc,
-        imgSrc: filename,
-        filter,
-        location,
-        type,
-        group_id: group,
-        post_time: new Date().getTime(),
-      }
+app.post(
+  '/post-it',
+  mw.ActionAuth,
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      let { id } = req.session,
+        { desc, filter, location, type, group } = req.body,
+        filename = `instagram_${new Date().getTime()}.jpg`,
+        obj = {
+          srcFile: req.file.path,
+          destFile: `${root}/dist/posts/${filename}`,
+        },
+        insert = {
+          user: id,
+          description: desc,
+          imgSrc: filename,
+          filter,
+          location,
+          type,
+          group_id: group,
+          post_time: new Date().getTime(),
+        }
 
-    await ProcessImage(obj)
-    DeleteAllOfFolder(`${root}/dist/temp/`)
+      await ProcessImage(obj)
+      DeleteAllOfFolder(`${root}/dist/temp/`)
 
-    let { insertId } = await db.query('INSERT INTO posts SET ?', insert),
-      firstname = await User.getWhat('firstname', id),
-      surname = await User.getWhat('surname', id)
+      let { insertId } = await db.query('INSERT INTO posts SET ?', insert),
+        firstname = await User.getWhat('firstname', id),
+        surname = await User.getWhat('surname', id)
 
-    await db.toHashtag(desc, id, insertId)
-    await User.mentionUsers(desc, id, insertId, 'post')
+      await db.toHashtag(desc, id, insertId)
+      await User.mentionUsers(desc, id, insertId, 'post')
 
-    res.json({
-      success: true,
-      mssg: 'Posted!!',
-      post_id: insertId,
-      firstname,
-      surname,
-      filename,
-    })
-  } catch (error) {
-    db.catchError(error, res)
+      res.json({
+        success: true,
+        mssg: 'Posted!!',
+        post_id: insertId,
+        firstname,
+        surname,
+        filename,
+      })
+    } catch (error) {
+      db.catchError(error, res)
+    }
   }
-})
+)
 
 // TAGS USERS FOR A POST [REQ = TAGS, POST_ID]
 app.post('/tag-post', (req, res) => {

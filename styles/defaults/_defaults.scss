@@ -1,4 +1,5 @@
 // defaults
+@import 'fonts'; // PoppinsRounded font
 @import 'input';
 @import 'button';
 @import 'options';
@@ -6,12 +7,12 @@
 
 // OTHER DEFAULTS
 
-*{
+* {
   padding: 0px;
   margin: 0px;
 }
 
-body{
+body {
   font-family: $family;
   background: $fb;
   font-size: 13px;
@@ -19,26 +20,28 @@ body{
   font-weight: normal;
 }
 
-a{
+a {
   text-decoration: none;
   color: $a;
   outline: none;
 }
 
-i{
+i {
   pointer-events: none;
 }
 
-hr{
+hr {
   border: 0;
   border-top: 1px solid #c1c7cd;
 }
 
-li{
+li {
   list-style: none;
 }
 
-.a_pri{ color: $a; }
+.a_pri {
+  color: $a;
+}
 
 .hashtag {
   color: #3d464d;
@@ -46,28 +49,34 @@ li{
 }
 
 @keyframes bounce {
-  0%, 75%, 100%{
+
+  0%,
+  75%,
+  100% {
     transform: translateY(0px);
   }
-  25%{
+
+  25% {
     transform: translateY(-10px)
   }
 }
 
-.select_receiver_toggle{
+.select_receiver_toggle {
   border: 1px solid #56b4ef !important;
   box-shadow: 0px 0px 5px 1px #c8def0 !important;
   animation: pro_active 0.1s ease-in-out;
 }
 
 @keyframes pro_active {
-  0%{
+  0% {
     transform: scale(1);
   }
-  50%{
+
+  50% {
     transform: scale(0.95);
   }
-  100%{
+
+  100% {
     transform: scale(1);
   }
 }
